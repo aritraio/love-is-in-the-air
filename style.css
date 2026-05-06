@@ -1,23 +1,30 @@
 /* =============================================
-   CSS VARIABLES — DESIGN TOKENS
+   CSS VARIABLES — DARK THEME (DEFAULT)
    ============================================= */
-:root {
+:root,
+[data-theme="dark"] {
   /* Background */
-  --bg-start: #0a0a12;
-  --bg-mid: #12101f;
-  --bg-end: #0d0b1a;
+  --bg-start: #070710;
+  --bg-mid: #0f0d1e;
+  --bg-end: #0a0816;
+
+  /* Animated gradient overlay */
+  --gradient-1: rgba(139, 50, 100, 0.15);
+  --gradient-2: rgba(60, 30, 110, 0.12);
+  --gradient-3: rgba(180, 80, 50, 0.08);
 
   /* Glass card */
   --glass-bg: rgba(255, 255, 255, 0.04);
   --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-blur: 24px;
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --glass-blur: 28px;
+  --glass-shadow: 0 8px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.05);
 
-  /* Accent palette — muted rose / warm gold */
+  /* Accent palette — muted rose / warm gold / soft violet */
   --accent-rose: #d4577a;
   --accent-rose-soft: rgba(212, 87, 122, 0.35);
   --accent-gold: #c9a84c;
   --accent-warm: #e8a0b4;
+  --accent-violet: #9b6dff;
 
   /* Text */
   --text-primary: #f0eaef;
@@ -34,9 +41,22 @@
   --btn-no-border: rgba(255, 255, 255, 0.12);
   --btn-no-text: rgba(240, 234, 239, 0.65);
 
+  /* Orbs */
+  --orb-1: rgba(180, 68, 106, 0.18);
+  --orb-2: rgba(100, 60, 200, 0.12);
+  --orb-3: rgba(201, 168, 76, 0.10);
+
+  /* Theme toggle */
+  --toggle-bg: rgba(255, 255, 255, 0.06);
+  --toggle-border: rgba(255, 255, 255, 0.1);
+
+  /* Mood / progress dots */
+  --dot-inactive: rgba(255, 255, 255, 0.12);
+  --dot-active: var(--accent-rose);
+
   /* Misc */
-  --radius-card: 24px;
-  --radius-btn: 14px;
+  --radius-card: 28px;
+  --radius-btn: 16px;
   --transition-base: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -44,6 +64,50 @@
   --yes-glow-intensity: 0.4;
   --yes-scale: 1;
   --yes-pulse-speed: 2.8s;
+
+  /* Card shake intensity — mutated by JS */
+  --shake-intensity: 0;
+}
+
+/* =============================================
+   LIGHT THEME
+   ============================================= */
+[data-theme="light"] {
+  --bg-start: #faf5f7;
+  --bg-mid: #f5eef2;
+  --bg-end: #f0e8ed;
+
+  --gradient-1: rgba(212, 87, 122, 0.08);
+  --gradient-2: rgba(155, 109, 255, 0.06);
+  --gradient-3: rgba(201, 168, 76, 0.05);
+
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-border: rgba(200, 180, 190, 0.35);
+  --glass-shadow: 0 8px 40px rgba(100, 50, 80, 0.1), inset 0 1px 0 rgba(255,255,255,0.8);
+
+  --text-primary: #2a1f25;
+  --text-secondary: rgba(42, 31, 37, 0.6);
+  --text-muted: rgba(42, 31, 37, 0.35);
+
+  --btn-yes-bg: linear-gradient(135deg, #d4577a, #c04060);
+  --btn-yes-glow: rgba(212, 87, 122, 0.3);
+  --btn-yes-hover: linear-gradient(135deg, #e06888, #d05070);
+
+  --btn-no-bg: rgba(42, 31, 37, 0.06);
+  --btn-no-border: rgba(42, 31, 37, 0.15);
+  --btn-no-text: rgba(42, 31, 37, 0.6);
+
+  --orb-1: rgba(212, 87, 122, 0.1);
+  --orb-2: rgba(155, 109, 255, 0.08);
+  --orb-3: rgba(201, 168, 76, 0.06);
+
+  --toggle-bg: rgba(42, 31, 37, 0.06);
+  --toggle-border: rgba(42, 31, 37, 0.12);
+
+  --dot-inactive: rgba(42, 31, 37, 0.12);
+  --dot-active: var(--accent-rose);
+
+  --accent-warm: #c87090;
 }
 
 /* =============================================
@@ -63,12 +127,163 @@ html {
 
 body {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: linear-gradient(160deg, var(--bg-start), var(--bg-mid), var(--bg-end));
+  background: var(--bg-mid);
   color: var(--text-primary);
   min-height: 100dvh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background 0.5s ease, color 0.5s ease;
+}
+
+/* Animated gradient background layer */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 20% 30%, var(--gradient-1) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 70%, var(--gradient-2) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 50%, var(--gradient-3) 0%, transparent 70%),
+    linear-gradient(160deg, var(--bg-start), var(--bg-mid), var(--bg-end));
+  z-index: 0;
+  pointer-events: none;
+  animation: gradient-shift 12s ease-in-out infinite alternate;
+  transition: all 0.5s ease;
+}
+
+@keyframes gradient-shift {
+  0% {
+    background:
+      radial-gradient(ellipse at 20% 30%, var(--gradient-1) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 70%, var(--gradient-2) 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 50%, var(--gradient-3) 0%, transparent 70%),
+      linear-gradient(160deg, var(--bg-start), var(--bg-mid), var(--bg-end));
+  }
+  50% {
+    background:
+      radial-gradient(ellipse at 40% 60%, var(--gradient-2) 0%, transparent 65%),
+      radial-gradient(ellipse at 70% 20%, var(--gradient-1) 0%, transparent 50%),
+      radial-gradient(ellipse at 30% 80%, var(--gradient-3) 0%, transparent 60%),
+      linear-gradient(200deg, var(--bg-end), var(--bg-mid), var(--bg-start));
+  }
+  100% {
+    background:
+      radial-gradient(ellipse at 60% 40%, var(--gradient-3) 0%, transparent 55%),
+      radial-gradient(ellipse at 25% 75%, var(--gradient-1) 0%, transparent 60%),
+      radial-gradient(ellipse at 75% 30%, var(--gradient-2) 0%, transparent 65%),
+      linear-gradient(180deg, var(--bg-start), var(--bg-end), var(--bg-mid));
+  }
+}
+
+/* =============================================
+   FLOATING ORBS
+   ============================================= */
+.orbs {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  will-change: transform;
+}
+
+.orb-1 {
+  width: 350px;
+  height: 350px;
+  background: var(--orb-1);
+  top: 15%;
+  left: -5%;
+  animation: orb-float-1 18s ease-in-out infinite alternate;
+}
+
+.orb-2 {
+  width: 280px;
+  height: 280px;
+  background: var(--orb-2);
+  bottom: 10%;
+  right: -8%;
+  animation: orb-float-2 22s ease-in-out infinite alternate;
+}
+
+.orb-3 {
+  width: 200px;
+  height: 200px;
+  background: var(--orb-3);
+  top: 55%;
+  left: 40%;
+  animation: orb-float-3 15s ease-in-out infinite alternate;
+}
+
+@keyframes orb-float-1 {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(60px, 40px) scale(1.1); }
+  100% { transform: translate(-30px, 80px) scale(0.9); }
+}
+
+@keyframes orb-float-2 {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(-50px, -60px) scale(1.15); }
+  100% { transform: translate(40px, -30px) scale(0.95); }
+}
+
+@keyframes orb-float-3 {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(30px, -50px) scale(1.08); }
+  100% { transform: translate(-40px, 20px) scale(1.12); }
+}
+
+/* =============================================
+   THEME TOGGLE
+   ============================================= */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 50;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--toggle-border);
+  background: var(--toggle-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-base), background var(--transition-base), box-shadow var(--transition-base);
+  outline: none;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1) rotate(15deg);
+  box-shadow: 0 0 20px rgba(155, 109, 255, 0.2);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--accent-warm);
+  outline-offset: 3px;
+}
+
+.theme-toggle:active {
+  transform: scale(0.95);
+}
+
+.theme-icon {
+  font-size: 1.3rem;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: block;
+}
+
+.theme-toggle:hover .theme-icon {
+  transform: rotate(20deg);
 }
 
 /* =============================================
@@ -114,17 +329,18 @@ body {
 .glass-card {
   position: relative;
   width: 90%;
-  max-width: 420px;
+  max-width: 440px;
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-card);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
   box-shadow: var(--glass-shadow);
-  padding: 48px 32px 40px;
+  padding: 48px 36px 40px;
   text-align: center;
   z-index: 2;
-  transition: transform var(--transition-slow), opacity var(--transition-slow);
+  transition: transform var(--transition-slow), opacity var(--transition-slow), box-shadow var(--transition-slow), background 0.5s ease;
+  overflow: visible;
 }
 
 /* Subtle top-edge highlight */
@@ -138,10 +354,77 @@ body {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.18),
     transparent
   );
   border-radius: 1px;
+}
+
+/* Bottom edge glow */
+.glass-card::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--accent-rose-soft),
+    transparent
+  );
+  border-radius: 1px;
+}
+
+/* Card entrance animation */
+.card-entrance {
+  animation: card-float-in 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes card-float-in {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.92);
+    filter: blur(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+/* Card shake on No click */
+.card-shake {
+  animation: card-shake-anim 0.5s ease-out;
+}
+
+@keyframes card-shake-anim {
+  0%, 100% { transform: translateX(0); }
+  10% { transform: translateX(-6px) rotate(-0.5deg); }
+  20% { transform: translateX(5px) rotate(0.5deg); }
+  30% { transform: translateX(-4px) rotate(-0.3deg); }
+  40% { transform: translateX(3px) rotate(0.3deg); }
+  50% { transform: translateX(-2px); }
+  60% { transform: translateX(1px); }
+}
+
+/* =============================================
+   DECORATIVE SPARKLE
+   ============================================= */
+.card-sparkle {
+  position: absolute;
+  top: -14px;
+  right: -8px;
+  font-size: 1.6rem;
+  animation: sparkle-float 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.4));
+}
+
+@keyframes sparkle-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-6px) rotate(10deg); }
 }
 
 /* =============================================
@@ -150,11 +433,12 @@ body {
 .heading {
   font-family: "Playfair Display", Georgia, serif;
   font-weight: 700;
-  font-size: clamp(1.5rem, 5vw, 2rem);
+  font-size: clamp(1.5rem, 5vw, 2.1rem);
   line-height: 1.3;
   letter-spacing: -0.01em;
   color: var(--text-primary);
   margin-bottom: 12px;
+  transition: color 0.5s ease;
 }
 
 .subtext {
@@ -163,10 +447,70 @@ body {
   font-size: clamp(0.85rem, 3vw, 0.95rem);
   color: var(--text-secondary);
   line-height: 1.55;
-  margin-bottom: 36px;
+  margin-bottom: 24px;
   max-width: 34ch;
   margin-left: auto;
   margin-right: auto;
+  transition: color 0.5s ease;
+}
+
+/* =============================================
+   MOOD INDICATOR
+   ============================================= */
+.mood-indicator {
+  margin-bottom: 28px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mood-emoji {
+  font-size: 2.2rem;
+  display: inline-block;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: mood-bounce 2s ease-in-out infinite;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
+}
+
+@keyframes mood-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* When mood changes, do a little flip */
+.mood-emoji.mood-change {
+  animation: mood-flip 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes mood-flip {
+  0% { transform: scale(0.5) rotateY(90deg); }
+  50% { transform: scale(1.3) rotateY(0deg); }
+  100% { transform: scale(1) rotateY(0deg); }
+}
+
+/* =============================================
+   STAGE PROGRESS DOTS
+   ============================================= */
+.stage-dots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--dot-inactive);
+  transition: background var(--transition-base), transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.dot.active {
+  background: var(--dot-active);
+  transform: scale(1.4);
+  box-shadow: 0 0 8px var(--accent-rose-soft);
 }
 
 /* =============================================
@@ -194,7 +538,8 @@ body {
     background var(--transition-base),
     padding var(--transition-base),
     font-size var(--transition-base),
-    opacity var(--transition-base);
+    opacity var(--transition-base),
+    border-color var(--transition-base);
   outline: none;
   white-space: nowrap;
 }
@@ -212,13 +557,38 @@ body {
   box-shadow: 0 0 20px rgba(184, 68, 106, var(--yes-glow-intensity));
   transform: scale(var(--yes-scale));
   animation: pulse-yes var(--yes-pulse-speed) ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Shine sweep effect on Yes */
+.btn-yes::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 40%;
+  height: 200%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.15),
+    transparent
+  );
+  transform: skewX(-20deg);
+  animation: yes-shine 4s ease-in-out infinite;
+}
+
+@keyframes yes-shine {
+  0%, 70%, 100% { left: -60%; }
+  30% { left: 130%; }
 }
 
 .btn-yes:hover,
 .btn-yes:focus-visible {
   background: var(--btn-yes-hover);
-  box-shadow: 0 0 30px rgba(184, 68, 106, calc(var(--yes-glow-intensity) + 0.15));
-  transform: scale(calc(var(--yes-scale) + 0.03));
+  box-shadow: 0 0 35px rgba(184, 68, 106, calc(var(--yes-glow-intensity) + 0.2));
+  transform: scale(calc(var(--yes-scale) + 0.04));
 }
 
 .btn-yes:active {
@@ -230,7 +600,7 @@ body {
     box-shadow: 0 0 20px rgba(184, 68, 106, var(--yes-glow-intensity));
   }
   50% {
-    box-shadow: 0 0 35px rgba(184, 68, 106, calc(var(--yes-glow-intensity) + 0.15));
+    box-shadow: 0 0 40px rgba(184, 68, 106, calc(var(--yes-glow-intensity) + 0.18));
   }
 }
 
@@ -240,11 +610,25 @@ body {
   color: var(--btn-no-text);
   border: 1px solid var(--btn-no-border);
   position: relative;
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base),
+    background var(--transition-base),
+    padding var(--transition-base),
+    font-size var(--transition-base),
+    opacity var(--transition-base),
+    border-color var(--transition-base),
+    color var(--transition-base);
 }
 
 .btn-no:hover,
 .btn-no:focus-visible {
   background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="light"] .btn-no:hover,
+[data-theme="light"] .btn-no:focus-visible {
+  background: rgba(42, 31, 37, 0.1);
 }
 
 .btn-no:active {
@@ -255,8 +639,9 @@ body {
 .btn-no.escaping {
   position: fixed;
   z-index: 100;
-  transition: top 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-              left 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: top 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+              left 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+              transform 0.35s ease;
 }
 
 /* =============================================
@@ -266,26 +651,62 @@ body {
   animation: card-entrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+.success-badge {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  animation: badge-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both;
+}
+
+@keyframes badge-pop {
+  0% { transform: scale(0) rotate(-15deg); opacity: 0; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
 .success-heading {
-  background: linear-gradient(135deg, var(--accent-warm), var(--accent-gold));
+  background: linear-gradient(135deg, var(--accent-warm), var(--accent-gold), var(--accent-violet));
+  background-size: 200% 200%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  animation: gradient-text 4s ease-in-out infinite alternate;
+}
+
+@keyframes gradient-text {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
 }
 
 .success-subtext {
   color: var(--text-secondary);
-  margin-bottom: 0;
+  margin-bottom: 20px;
+}
+
+.success-footer {
+  margin-top: 8px;
+}
+
+.success-stamp {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  letter-spacing: 0.3em;
+  animation: stamp-fade 1s ease 0.8s both;
+}
+
+@keyframes stamp-fade {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes card-entrance {
   0% {
     opacity: 0;
     transform: translateY(30px) scale(0.95);
+    filter: blur(6px);
   }
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
+    filter: blur(0px);
   }
 }
 
@@ -305,6 +726,10 @@ body {
   #heart-canvas {
     display: none;
   }
+
+  .orbs {
+    display: none;
+  }
 }
 
 /* =============================================
@@ -312,7 +737,7 @@ body {
    ============================================= */
 @media (max-width: 480px) {
   .glass-card {
-    padding: 36px 20px 32px;
+    padding: 36px 22px 32px;
   }
 
   .button-row {
@@ -322,5 +747,22 @@ body {
   .btn {
     padding: 12px 24px;
     font-size: 0.92rem;
+  }
+
+  .theme-toggle {
+    top: 14px;
+    right: 14px;
+    width: 42px;
+    height: 42px;
+  }
+
+  .card-sparkle {
+    font-size: 1.3rem;
+    top: -10px;
+    right: -4px;
+  }
+
+  .mood-emoji {
+    font-size: 1.8rem;
   }
 }
