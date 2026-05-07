@@ -4,20 +4,20 @@
 :root,
 [data-theme="dark"] {
   /* Background */
-  --bg-start: #070710;
-  --bg-mid: #0f0d1e;
-  --bg-end: #0a0816;
+  --bg-start: #050410;
+  --bg-mid: #13091f;
+  --bg-end: #220b24;
 
   /* Animated gradient overlay */
-  --gradient-1: rgba(139, 50, 100, 0.15);
-  --gradient-2: rgba(60, 30, 110, 0.12);
-  --gradient-3: rgba(180, 80, 50, 0.08);
+  --gradient-1: rgba(255, 80, 150, 0.18);
+  --gradient-2: rgba(100, 70, 255, 0.14);
+  --gradient-3: rgba(255, 190, 95, 0.1);
 
   /* Glass card */
-  --glass-bg: rgba(255, 255, 255, 0.04);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-bg: linear-gradient(145deg, rgba(255, 255, 255, 0.085), rgba(255, 255, 255, 0.025));
+  --glass-border: rgba(255, 226, 238, 0.16);
   --glass-blur: 28px;
-  --glass-shadow: 0 8px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+  --glass-shadow: 0 24px 80px rgba(0, 0, 0, 0.55), 0 0 80px rgba(212, 87, 122, 0.12), inset 0 1px 0 rgba(255,255,255,0.08);
 
   /* Accent palette — muted rose / warm gold / soft violet */
   --accent-rose: #d4577a;
@@ -25,6 +25,7 @@
   --accent-gold: #c9a84c;
   --accent-warm: #e8a0b4;
   --accent-violet: #9b6dff;
+  --accent-cyan: #7ce7ff;
 
   /* Text */
   --text-primary: #f0eaef;
@@ -32,9 +33,9 @@
   --text-muted: rgba(240, 234, 239, 0.35);
 
   /* Button — Yes */
-  --btn-yes-bg: linear-gradient(135deg, #b8446a, #943a5a);
+  --btn-yes-bg: linear-gradient(135deg, #ff5f93, #b844f5 52%, #ff9f6e);
   --btn-yes-glow: rgba(184, 68, 106, 0.4);
-  --btn-yes-hover: linear-gradient(135deg, #cf5a7e, #a94568);
+  --btn-yes-hover: linear-gradient(135deg, #ff7aa7, #c35bff 52%, #ffc078);
 
   /* Button — No */
   --btn-no-bg: rgba(255, 255, 255, 0.06);
@@ -42,9 +43,9 @@
   --btn-no-text: rgba(240, 234, 239, 0.65);
 
   /* Orbs */
-  --orb-1: rgba(180, 68, 106, 0.18);
-  --orb-2: rgba(100, 60, 200, 0.12);
-  --orb-3: rgba(201, 168, 76, 0.10);
+  --orb-1: rgba(255, 80, 145, 0.22);
+  --orb-2: rgba(124, 231, 255, 0.13);
+  --orb-3: rgba(255, 190, 95, 0.14);
 
   /* Theme toggle */
   --toggle-bg: rgba(255, 255, 255, 0.06);
@@ -150,6 +151,23 @@ body::before {
   pointer-events: none;
   animation: gradient-shift 12s ease-in-out infinite alternate;
   transition: all 0.5s ease;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    radial-gradient(circle at 18% 24%, rgba(255, 255, 255, 0.45) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 72% 18%, rgba(255, 221, 160, 0.5) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 82% 74%, rgba(180, 145, 255, 0.45) 0 1px, transparent 1.5px);
+  background-size: 72px 72px, 72px 72px, 100% 100%, 100% 100%, 100% 100%;
+  mask-image: radial-gradient(circle at center, black, transparent 78%);
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.8;
 }
 
 @keyframes gradient-shift {
@@ -341,6 +359,7 @@ body::before {
   z-index: 2;
   transition: transform var(--transition-slow), opacity var(--transition-slow), box-shadow var(--transition-slow), background 0.5s ease;
   overflow: visible;
+  isolation: isolate;
 }
 
 /* Subtle top-edge highlight */
@@ -375,6 +394,11 @@ body::before {
     transparent
   );
   border-radius: 1px;
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--glass-shadow), 0 0 0 1px rgba(255, 255, 255, 0.04);
 }
 
 /* Card entrance animation */
@@ -427,6 +451,23 @@ body::before {
   50% { transform: translateY(-6px) rotate(10deg); }
 }
 
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 12px;
+  margin-bottom: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.055);
+  color: var(--accent-gold);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
 /* =============================================
    TYPOGRAPHY
    ============================================= */
@@ -439,6 +480,8 @@ body::before {
   color: var(--text-primary);
   margin-bottom: 12px;
   transition: color 0.5s ease;
+  text-wrap: balance;
+  text-shadow: 0 0 32px rgba(255, 95, 147, 0.16);
 }
 
 .subtext {
@@ -452,6 +495,40 @@ body::before {
   margin-left: auto;
   margin-right: auto;
   transition: color 0.5s ease;
+}
+
+.love-meter {
+  display: grid;
+  gap: 8px;
+  max-width: 260px;
+  margin: 0 auto 24px;
+}
+
+.meter-label {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.meter-track {
+  height: 9px;
+  padding: 2px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+.meter-fill {
+  display: block;
+  width: 42%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent-rose), var(--accent-violet), var(--accent-gold));
+  box-shadow: 0 0 18px var(--accent-rose-soft);
+  transition: width 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), filter var(--transition-base);
 }
 
 /* =============================================
@@ -511,6 +588,14 @@ body::before {
   background: var(--dot-active);
   transform: scale(1.4);
   box-shadow: 0 0 8px var(--accent-rose-soft);
+}
+
+.card-signature {
+  margin-top: 18px;
+  color: var(--text-muted);
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 0.8rem;
+  font-style: italic;
 }
 
 /* =============================================
@@ -679,6 +764,32 @@ body::before {
 .success-subtext {
   color: var(--text-secondary);
   margin-bottom: 20px;
+}
+
+.success-ticket {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 14px;
+  margin: 22px auto 18px;
+  padding: 14px;
+  max-width: 330px;
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.success-ticket strong {
+  color: var(--accent-gold);
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 2rem;
+  line-height: 1;
+  text-shadow: 0 0 18px rgba(201, 168, 76, 0.35);
 }
 
 .success-footer {

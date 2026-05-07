@@ -77,6 +77,7 @@
   const themeIcon = themeToggle.querySelector(".theme-icon");
   const moodEmoji = document.getElementById("mood-emoji");
   const stageDots = document.querySelectorAll(".dot");
+  const meterFill = document.getElementById("meter-fill");
 
   // =========================================
   // STATE
@@ -189,6 +190,12 @@
       if (d < noClickCount) {
         stageDots[d].classList.add("active");
       }
+    }
+
+    if (meterFill) {
+      var meterWidth = Math.min(42 + noClickCount * 10, 100);
+      meterFill.style.width = meterWidth + "%";
+      meterFill.style.filter = "saturate(" + (1 + noClickCount * 0.12) + ")";
     }
 
     // Shake the card
